@@ -1,0 +1,31 @@
+{
+  "name": "doclync-pro",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Satwik290/DocLync-Pro.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Satwik290/DocLync-Pro/issues"
+  },
+  "homepage": "https://github.com/Satwik290/DocLync-Pro#readme",
+  "devDependencies": {
+    "prettier": "^3.7.4",
+    "turbo": "^2.7.4"
+  }
+}
