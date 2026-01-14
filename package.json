@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
+  "packageManager": "npm@10.8.2",  
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -24,7 +25,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/Satwik290/DocLync-Pro/issues"
   },

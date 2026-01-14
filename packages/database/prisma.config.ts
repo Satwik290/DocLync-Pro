@@ -1,14 +1,11 @@
-// packages/database/src/prisma.config.ts
 import { defineConfig } from '@prisma/config';
-import * as dotenv from 'dotenv';
-import path from 'path';
+import dotenv from 'dotenv';
 
-// This ensures the .env is loaded from the current package directory
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+// Manually load the env file if Prisma CLI isn't picking it up
+dotenv.config(); 
 
 export default defineConfig({
   datasource: {
-    // Force Prisma to use the environment variable
-    url: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL!,
   },
 });

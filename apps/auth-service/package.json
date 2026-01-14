@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
@@ -22,8 +22,8 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@doclync/database": "workspace:*",
-    "@doclync/common": "workspace:*",
+    "@doclync/database": "*",
+    "@doclync/common": "*",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

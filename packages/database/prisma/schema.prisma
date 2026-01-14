@@ -8,6 +8,8 @@
 
 generator client {
   provider = "prisma-client-js"
+  // If you are using the pg adapter in your index.ts, you might need:
+  // previewFeatures = ["adapter-pg"] 
 }
 
 datasource db {
