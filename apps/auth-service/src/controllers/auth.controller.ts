@@ -64,3 +64,14 @@ export const logout = async (req:Request, res:Response) => {
     res.status(500).json({ message });
   }
 };
+
+export const getallUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await authService.getallUsers();
+    res.status(200).json(users);
+    
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to retrieve users';
+    res.status(500).json({ message });
+  }
+}

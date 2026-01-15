@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
-import { signup, login, logout } from '../controllers/auth.controller.js';
+import { signup, login, logout , getallUsers} from '../controllers/auth.controller.js';
 import { authenticateJWT } from '../middleware/auth.middleware.js';
 import { authorizeRoles } from '../middleware/role.middleware.js';
 import { getDoctors, updateDoctorProfile } from '../controllers/doctor.controller.js';
@@ -57,5 +57,6 @@ router.put('/doctor/profile',
 
 // Publicly searchable list of doctors
 router.get('/doctors', getDoctors);
+router.get('/patients', getallUsers);
 
 export default router;

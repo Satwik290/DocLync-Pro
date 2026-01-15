@@ -24,7 +24,6 @@ export class DoctorService {
     });
   }
 
-  // apps/auth-service/src/services/doctor.service.ts
   async updateProfile(userId: string, data: any) {
     // Add a log here to debug if it's still failing
     console.log("Updating profile for User ID:", userId);

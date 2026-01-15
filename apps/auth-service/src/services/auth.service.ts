@@ -36,6 +36,26 @@ export class AuthService {
     return { user: userWithoutPassword, token };
   }
 
+  async getUserById(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },  
+    });
+    if (!user) throw new Error("User not found");   
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }   
+
+  async getallUsers() {
+    return await prisma.user.findMany({
+      where: { role: 'PATIENT' },
+      select: {
+        id: true, 
+        name: true, 
+        email: true,
+        role: true
+      }
+    }); 
+  } 
 };
 
 
