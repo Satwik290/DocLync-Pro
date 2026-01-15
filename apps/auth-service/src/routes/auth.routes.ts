@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import { signup, login, logout } from '../controllers/auth.controller.js';
 import { authenticateJWT } from '../middleware/auth.middleware.js';
 import { authorizeRoles } from '../middleware/role.middleware.js';
+import { getDoctors, updateDoctorProfile } from '../controllers/doctor.controller.js';
 
 const router = Router();
 
@@ -46,5 +47,15 @@ router.get('/admin/stats',
   (req: Request, res: Response) => {
     res.json({ message: "System-wide statistics (Admin only)." });
 });
+
+// Only DOCTORs can update their professional details
+router.put('/doctor/profile', 
+  authenticateJWT, 
+  authorizeRoles('DOCTOR'), 
+  updateDoctorProfile
+);
+
+// Publicly searchable list of doctors
+router.get('/doctors', getDoctors);
 
 export default router;

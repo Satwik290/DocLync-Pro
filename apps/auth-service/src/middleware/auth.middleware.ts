@@ -26,7 +26,7 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as UserPayload;
-    
+    // console.log("🔓 Token Decoded Successfully:", decoded);
     // Now req.user is recognized by standard Express Request!
     req.user = decoded;
     next();

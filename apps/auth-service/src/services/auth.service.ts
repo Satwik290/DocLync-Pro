@@ -25,7 +25,9 @@ export class AuthService {
 
     // 3. Generate JWT
     const token = jwt.sign(
-      { userId: user.id, role: user.role },
+      { id: user.id, 
+        email: user.email,
+        role: user.role },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
     );
