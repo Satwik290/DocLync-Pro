@@ -25,3 +25,42 @@ export const signup = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const authService = new AuthService();
+    const { user, token } = await authService.login(email, password);
+
+    // Set cookie
+    res.cookie('token', token, {
+      httpOnly: true, // Prevents XSS
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    res.status(200).json({
+      message: 'Login successful',
+      user
+    });
+  } catch (error) {
+  const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+  res.status(401).json({ message });
+}
+};
+
+export const logout = async (req:Request, res:Response) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Logout failed';
+    res.status(500).json({ message });
+  }
+};

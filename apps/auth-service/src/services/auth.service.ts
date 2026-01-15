@@ -1,6 +1,7 @@
 import { prisma } from '@doclync/database';
 import bcrypt from 'bcrypt';
 import type { SignupInput } from '@doclync/common';
+import jwt from 'jsonwebtoken';
 
 export class AuthService {
   async registerUser(data: SignupInput) {
@@ -13,4 +14,26 @@ export class AuthService {
       data: { ...data, password: hashedPassword }
     });
   }
-}
+    async login(email: string, password: string) {
+    // 1. Find user
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new Error("Invalid credentials");
+
+    // 2. Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error("Invalid credentials");
+
+    // 3. Generate JWT
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: '7d' }
+    );
+
+    const { password: _, ...userWithoutPassword } = user;
+    return { user: userWithoutPassword, token };
+  }
+
+};
+
+

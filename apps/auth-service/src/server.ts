@@ -19,7 +19,9 @@ app.get('/api/health', async (req, res) => {
     await prisma.$queryRaw`SELECT 1`;
     res.json({ status: "Auth Service Active", database: "Connected ✅" });
   } catch (err) {
-    res.status(500).json({ status: "DB Error", error: err.message });
+    // Cast to Error to access .message
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    res.status(500).json({ status: "DB Error", error: errorMessage });
   }
 });
 
