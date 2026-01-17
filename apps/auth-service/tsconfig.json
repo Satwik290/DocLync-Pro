@@ -10,7 +10,7 @@
     "verbatimModuleSyntax": true,
     "composite": true,
     "ignoreDeprecations": "5.0",
-    "rootDir": "." // Change this to "." so it covers 'src' and any local types
+    "rootDir": "." 
   },
   "include": [
     "src/**/*",
