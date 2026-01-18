@@ -31,3 +31,15 @@ export const verifyPayment = async (req: Request, res: Response) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+export const getMyAppointments = async (req: Request, res: Response) => {
+  try {
+    // patientId comes from your authenticateJWT middleware
+    const patientId = (req as any).user.id; 
+    
+    const appointments = await service.getPatientAppointments(patientId);
+    res.json(appointments);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};

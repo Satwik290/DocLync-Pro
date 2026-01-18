@@ -58,6 +58,25 @@ if (intent.status === 'succeeded' || intent.status === 'requires_payment_method'
     };
   }
 
-  
-
+async getPatientAppointments(patientId: string) {
+  return await prisma.appointment.findMany({
+    where: { patientId },
+    include: {
+      doctor: {
+        select: {
+          specialization: true,
+          price: true,
+          user: {
+            select: {
+              name: true
+            }
+          }
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+}
 };
