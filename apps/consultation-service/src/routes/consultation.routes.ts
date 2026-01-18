@@ -8,8 +8,8 @@ router.post('/book', authenticateJWT, bookAppointment);
 router.post('/verify', authenticateJWT, verifyPayment);
 
 // Health check
-// router.get('/health', (req, res) => {
-//   res.json({ status: 'Consultation service is healthy' });
-// });
+router.get('/health', (req, res) => {
+  res.json({ status: 'Consultation service is healthy' });
+});
 
 export default router;

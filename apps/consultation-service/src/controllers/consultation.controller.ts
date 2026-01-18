@@ -17,9 +17,17 @@ export const bookAppointment = async (req: Request, res: Response) => {
 export const verifyPayment = async (req: Request, res: Response) => {
   try {
     const { paymentIntentId } = req.body;
+
+    if (!paymentIntentId) {
+      return res.status(400).json({ error: "Missing paymentIntentId" });
+    }
+
     const result = await service.verifyAndConfirm(paymentIntentId);
-    res.json({ message: "Payment verified successfully", ...result });
+    
+    // Just return the result. It already contains the success status and message.
+    res.json(result); 
   } catch (error: any) {
+    // If the service threw "Payment not completed", it lands here
     res.status(400).json({ error: error.message });
   }
 };
