@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "composite": true,
+    "ignoreDeprecations": "5.0",
+    "rootDir": "." // Change this to "." so it covers 'src' and any local types
+  },
+  "include": [
+    "src/**/*",
+    "../../packages/common/src/types/express.d.ts" 
+  ],
+  "references": [
+    { "path": "../../packages/database" },
+    { "path": "../../packages/common" }
+  ]
+}
