@@ -8,8 +8,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  // If you are using the pg adapter in your index.ts, you might need:
-  // previewFeatures = ["adapter-pg"] 
+  output   = "../node_modules/@prisma/client"
 }
 
 datasource db {
@@ -65,14 +64,17 @@ model Appointment {
   status    AppStatus @default(PENDING)
   paymentId String?   // Razorpay Payment ID
   
-  prescriptionUrl String? // Link to Cloudinary
+  prescriptionUrl String? 
   createdAt       DateTime @default(now())
+  messages        Message[] 
 }
 
 model Message {
-  id        String   @id @default(uuid())
-  senderId  String
-  sender    User     @relation(fields: [senderId], references: [id])
-  content   String
-  createdAt DateTime @default(now())
+  id            String      @id @default(uuid())
+  appointmentId String      // Add this field
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  senderId      String
+  sender        User        @relation(fields: [senderId], references: [id])
+  content       String
+  createdAt     DateTime    @default(now())
 }

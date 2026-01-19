@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "packageManager": "npm@10.8.2",  
+  "packageManager": "npm@10.8.2",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -14,7 +14,7 @@
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
     "lint": "eslint . --ext .ts,.tsx",
-    "format": "prettier --write ." ,
+    "format": "prettier --write .",
     "db:generate": "cd packages/database && npx prisma generate",
     "db:push": "cd packages/database && npx prisma db push"
   },
@@ -34,5 +34,8 @@
     "prettier": "^3.7.4",
     "turbo": "^2.7.4",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.2.0"
   }
 }

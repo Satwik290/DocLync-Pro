@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DocLync Chat Test</title>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+    <h2>Chat Test (Port 4003)</h2>
+    <input type="text" id="token" placeholder="Paste Doctor JWT here">
+    <input type="text" id="appId" placeholder="Appointment ID">
+    <button onclick="connect()">Connect & Join</button>
+    <hr>
+    <input type="text" id="msg" placeholder="Type message...">
+    <button onclick="sendMessage()">Send</button>
+    <ul id="messages"></ul>
+
+    <script>
+        let socket;
+        function connect() {
+            const token = document.getElementById('token').value;
+            const appId = document.getElementById('appId').value;
+
+            // Connect with Auth Token
+            socket = io("http://localhost:4003", {
+                auth: { token: token }
+            });
+
+            socket.on("connect", () => {
+                console.log("Connected!");
+                socket.emit("join_room", appId);
+            });
+
+            socket.on("receive_message", (data) => {
+                const li = document.createElement("li");
+                li.innerText = `${data.senderId}: ${data.text}`;
+                document.getElementById("messages").appendChild(li);
+            });
+
+            socket.on("connect_error", (err) => {
+                alert("Auth Failed: " + err.message);
+            });
+        }
+
+        function sendMessage() {
+            const appId = document.getElementById('appId').value;
+            const msg = document.getElementById('msg').value;
+            socket.emit("send_message", { appointmentId: appId, message: msg });
+        }
+    </script>
+</body>
+</html>
