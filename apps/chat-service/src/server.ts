@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import { initSocket } from './config/socket.js'; 
 import chatRoutes from './routes/chat.routes.js';
 import { authSocket } from './middleware/auth.socket.js';
-import { onConnection } from './handlers/index.js'; // The new aggregator
+import { onConnection } from './handlers/index.js'; 
 
 dotenv.config();
 
