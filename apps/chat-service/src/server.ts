@@ -1,11 +1,12 @@
 import express from 'express';
 import { createServer } from 'http';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
 import { initSocket } from './config/socket.js'; 
 import chatRoutes from './routes/chat.routes.js';
 import { authSocket } from './middleware/auth.socket.js';
-import { registerMessageHandlers } from './handlers/message.handler.js';
-import dotenv from 'dotenv';
-import cors from 'cors'; // Highly recommended for Monorepos
+import { onConnection } from './handlers/index.js'; // The new aggregator
 
 dotenv.config();
 
@@ -15,27 +16,21 @@ const app = express();
 app.use(cors()); 
 app.use(express.json());
 
-// 2. HTTP Routes
+// 2. HTTP Routes (for Chat List & History)
 app.use('/api/chat', chatRoutes);
 
-// 3. Create single HTTP Server instance
+// 3. Create Server Instance
 const httpServer = createServer(app);
 
-// 4. Initialize Socket.io on that server
+// 4. Initialize Socket.io
 const io = initSocket(httpServer);
 
-// 5. Apply Socket Security Middleware
+// 5. Security Handshake Middleware
 io.use(authSocket);
 
-// 6. Socket Connection Logic
+// 6. Socket Connection Logic (Delegated to Handlers)
 io.on('connection', (socket) => {
-  console.log(`✅ Socket Connected: ${socket.id} (User: ${(socket as any).user?.name})`);
-  
-  registerMessageHandlers(io, socket);
-
-  socket.on('disconnect', () => {
-    console.log(`❌ Socket Disconnected: ${socket.id}`);
-  });
+  onConnection(io, socket);
 });
 
 // 7. Start the Server

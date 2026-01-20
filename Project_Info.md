@@ -59,80 +59,85 @@ This structure ensures that each service is an independent unit (Microservice) b
 
 
 DocLync-Pro/
-│
 ├── apps/
-│   │
-│   ├── auth-service/                 # Authentication Microservice (4001)
+│   ├── auth-service/ (Port 4001)
 │   │   ├── src/
 │   │   │   ├── controllers/
-│   │   │   │   └── auth.controller.ts
+│   │   │   │   ├── auth.controller.ts     # Login, Signup, Logout logic
+│   │   │   │   └── doctor.controller.ts   # Doctor profile/onboarding logic
+│   │   │   ├── middleware/
+│   │   │   │   ├── auth.middleware.ts     # JWT validation for Express
+│   │   │   │   └── role.middleware.ts     # RBAC (Doctor/Patient)
 │   │   │   ├── routes/
-│   │   │   │   └── auth.routes.ts
+│   │   │   │   └── auth.routes.ts         # /api/auth and /api/doctor routes
 │   │   │   ├── services/
-│   │   │   │   └── auth.service.ts
-│   │   │   ├── middlewares/
-│   │   │   │   └── cookieAuth.ts
+│   │   │   │   ├── auth.service.ts        # Credential & User DB logic
+│   │   │   │   └── doctor.service.ts      # Specialized doctor profile queries
 │   │   │   ├── utils/
-│   │   │   │   └── jwt.ts
-│   │   │   └── server.ts
+│   │   │   │   ├── jwt.ts                 # Sign/Verify utilities
+│   │   │   │   └── config.ts              # Env and Global configs
+│   │   │   └── config.ts                  # preloader
+│   │   │   └── server.ts                  # Entry point (Express)
 │   │   └── package.json
 │   │
-│   ├── consultation-service/         # Appointments + Payments + Files (4002)
+│   ├── chat-service/ (Port 4003)
 │   │   ├── src/
+│   │   │   ├── config/
+│   │   │   │   ├── socket.ts              # IO Server initialization
+│   │   │   │   └── redis.ts               # Redis adapter for scaling
+│   │   │   ├── constants/
+│   │   │   │   └── events.ts              # JOIN_ROOM, SEND_MESSAGE, TYPING
+│   │   │   ├── handlers/
+│   │   │   │   ├── index.ts               # Socket event aggregator
+│   │   │   │   └── message.handler.ts     # Room & Message logic
+│   │   │   ├── middleware/
+│   │   │   │   ├── auth.socket.ts         # JWT check for handshakes
+│   │   │   │   └── auth.middleware.ts     # JWT check for HTTP routes
+│   │   │   ├── routes/
+│   │   │   │   └── chat.routes.ts         # GET /list (Chat sidebar history)
+│   │   │   ├── services/
+│   │   │   │   └── chat.service.ts        # Prisma queries for messages
+│   │   │   └── server.ts                  # Hybrid Entry point (HTTP + Socket)
+│   │   └── package.json
+│   │
+│   ├── consultation-service/ (Port 4002)
+│   │   ├── src/
+│   │   │   ├── config/
+│   │   │   │   ├── stripe.ts              # Payment gateway setup
+│   │   │   │   └── cloudinary.ts          # Storage setup
 │   │   │   ├── controllers/
 │   │   │   │   ├── appointment.controller.ts
-│   │   │   │   └── payment.controller.ts
-│   │   │   ├── routes/
-│   │   │   │   └── consultation.routes.ts
+│   │   │   │   └── prescription.controller.ts
 │   │   │   ├── services/
-│   │   │   │   └── consultation.service.ts
-│   │   │   ├── uploads/
-│   │   │   ├── utils/
-│   │   │   │   └── cloudinary.ts
-│   │   │   └── server.ts
+│   │   │   │   ├── appointment.service.ts
+│   │   │   │   └── stripe.service.ts      # Webhook & Session logic
+│   │   │   ├── routes/
+│   │   │   │   └── consultation.routes.ts # Merged routes
+│   │   │   └── server.ts                  # Entry point
 │   │   └── package.json
 │   │
-│   ├── chat-service/                 # Realtime Messaging (4003)
-│   │   ├── src/
-│   │   │   ├── socket/
-│   │   │   │   └── index.ts
-│   │   │   ├── redis/
-│   │   │   │   └── redisClient.ts
-│   │   │   └── server.ts
-│   │   └── package.json
-│   │
-│   └── client/                       # React / Vite Frontend (5173)
+│   └── client/ (Frontend 5173)
 │       ├── src/
 │       │   ├── api/
-│       │   │   └── axios.ts
-│       │   ├── pages/
-│       │   │   ├── Login.tsx
-│       │   │   ├── Dashboard.tsx
-│       │   │   └── Chat.tsx
-│       │   ├── components/
-│       │   │   └── Navbar.tsx
-│       │   └── main.tsx
-│       └── package.json
+│       │   │   ├── axios.ts               # Axios instance with Interceptors
+│       │   │   └── socket.ts              # Socket.io connection manager
+│       │   ├── components/                # Navbar, ChatBox, MessageItem
+│       │   ├── hooks/
+│       │   │   └── useChat.ts             # Custom hook for Socket logic
+│       │   └── pages/                     # Dashboard, Chat, Login
 │
 ├── packages/
-│   │
-│   ├── database/
+│   ├── database/                          # Shared DB Package
 │   │   ├── prisma/
-│   │   │   └── schema.prisma
-│   │   ├── index.ts
+│   │   │   └── schema.prisma              # Single source of truth
+│   │   ├── src/
+│   │   │   └── index.ts                   # Exported PrismaClient instance
 │   │   └── package.json
-│   │
-│   └── common/
-│       ├── src/
-│       │   ├── zod/
-│       │   │   └── auth.schema.ts
-│       │   ├── types/
-│       │   │   └── user.ts
-│       │   ├── middlewares/
-│       │   │   └── verifyToken.ts
-│       │   └── index.ts
-│       └── package.json
+│   └── common/                            # Shared TS Logic
+│       └── src/
+│           ├── types/                     # Shared Interfaces
+│           └── zod/                       # Validations (Auth/Booking)
+│           └── middleware/                # middleware
 │
 ├── turbo.json
-├── package.json
-└── README.md
+└── package.json
