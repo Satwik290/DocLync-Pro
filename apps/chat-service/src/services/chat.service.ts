@@ -37,4 +37,26 @@ export class ChatService {
       orderBy: { createdAt: "asc" },
     });
   }
+
+async getUserChatList(userId: string) {
+  return await prisma.appointment.findMany({
+    where: {
+      OR: [
+        { patientId: userId },
+        { doctor: { userId: userId } }
+      ]
+    },
+    include: {
+      patient: { select: { name: true } },
+      doctor: { 
+        include: { user: { select: { name: true } } } 
+      },
+      messages: {
+        orderBy: { createdAt: 'desc' },
+        take: 1 
+      }
+    },
+    orderBy: { createdAt: 'desc' }
+  });
+}
 }
