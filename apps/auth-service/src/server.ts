@@ -3,6 +3,7 @@ import './config.js';
 
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 // 2. Database and Routes come AFTER config
 import { prisma } from '@doclync/database';
@@ -12,7 +13,12 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow your frontend
+  credentials: true,               // Allow cookies/headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 // Health Check to verify DB connection
 app.get('/api/health', async (req, res) => {
   try {

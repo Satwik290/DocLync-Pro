@@ -1,9 +1,19 @@
-// src/api/socket.ts
 import { io, Socket } from 'socket.io-client'
 
+// 1. Define your event interfaces
+interface ServerToClientEvents {
+  messageReceived: (data: { roomId: string; message: string; senderId: string }) => void;
+  error: (err: { message: string }) => void;
+}
+
+interface ClientToServerEvents {
+  sendMessage: (data: { roomId: string; message: string }) => void;
+  joinRoom: (roomId: string) => void;
+}
+
 class SocketService {
-  private socket: Socket | null = null
-  
+  private socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null
+
   connect(token: string) {
     if (this.socket?.connected) return this.socket
 
@@ -14,10 +24,6 @@ class SocketService {
 
     this.socket.on('connect', () => {
       console.log('✅ Socket connected:', this.socket?.id)
-    })
-
-    this.socket.on('connect_error', (err) => {
-      console.error('❌ Socket connection error:', err.message)
     })
 
     return this.socket
@@ -34,16 +40,31 @@ class SocketService {
     return this.socket
   }
 
-  emit(event: string, data: any) {
-    this.socket?.emit(event, data)
+  // Use the eslint-disable comments right above the lines using 'any'
+  emit<K extends keyof ClientToServerEvents>(
+    event: K,
+    data: Parameters<ClientToServerEvents[K]>[0]
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.socket?.emit(event as any, data as any)
   }
 
-  on(event: string, callback: (...args: any[]) => void) {
-    this.socket?.on(event, callback)
+  on<K extends keyof ServerToClientEvents>(
+    event: K,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callback: any
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.socket?.on(event as any, callback)
   }
 
-  off(event: string, callback?: (...args: any[]) => void) {
-    this.socket?.off(event, callback)
+  off<K extends keyof ServerToClientEvents>(
+    event: K,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callback?: any
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.socket?.off(event as any, callback)
   }
 }
 

@@ -1,40 +1,27 @@
-// src/api/axios.ts
-import axios from 'axios'
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
 
-const AUTH_BASE_URL = 'http://localhost:4001/api/auth'
-const CONSULTATION_BASE_URL = 'http://localhost:4002/api/consultation'
-const CHAT_BASE_URL = 'http://localhost:4003/api/chat'
-
-export const authApi = axios.create({
-  baseURL: AUTH_BASE_URL,
+const AUTH_BASE_URL = import.meta.env.VITE_AUTH_API_URL;
+const CONSULTATION_BASE_URL = import.meta.env.VITE_CONSULTATION_API_URL;
+const CHAT_BASE_URL = import.meta.env.VITE_CHAT_API_URL;const config = {
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
-})
+}
 
-export const consultationApi = axios.create({
-  baseURL: CONSULTATION_BASE_URL,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
+export const authApi = axios.create({ ...config, baseURL: AUTH_BASE_URL })
+export const consultationApi = axios.create({ ...config, baseURL: CONSULTATION_BASE_URL })
+export const chatApi = axios.create({ ...config, baseURL: CHAT_BASE_URL })
 
-export const chatApi = axios.create({
-  baseURL: CHAT_BASE_URL,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-
-// JWT Interceptor for all APIs
-const addTokenInterceptor = (api: typeof axios) => {
+/**
+ * JWT Interceptor for all APIs
+ * Using AxiosInstance type instead of typeof axios
+ */
+const addTokenInterceptor = (api: AxiosInstance) => {
   api.interceptors.request.use(
-    (config) => {
+    (config: InternalAxiosRequestConfig) => {
       const token = localStorage.getItem('token')
-      if (token) {
+      if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`
       }
       return config
@@ -48,15 +35,19 @@ const addTokenInterceptor = (api: typeof axios) => {
       if (error.response?.status === 401) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
-        window.location.href = '/login'
+        // Only redirect if not already on the login page to avoid loops
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
       }
       return Promise.reject(error)
     }
   )
 }
 
+// Apply interceptors to instances
 addTokenInterceptor(authApi)
 addTokenInterceptor(consultationApi)
 addTokenInterceptor(chatApi)
 
-export default { authApi, consultationApi, chatApi }    
+export default { authApi, consultationApi, chatApi }
