@@ -30,7 +30,7 @@ const authHeader = req.headers.authorization;
     // Now req.user is recognized by standard Express Request!
     req.user = decoded;
     next();
-  } catch (error) {
-    return res.status(403).json({ message: 'Invalid token' });
-  }
-};
+} catch (error) {
+  console.error("JWT Verification Error:", error); // ADD THIS LINE
+  return res.status(403).json({ message: 'Invalid token' });
+}};

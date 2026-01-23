@@ -20,22 +20,28 @@ export const chatApi = axios.create({ ...config, baseURL: CHAT_BASE_URL })
 const addTokenInterceptor = (api: AxiosInstance) => {
   api.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      const token = localStorage.getItem('token')
-      if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`
+      const token = localStorage.getItem('token');
+      
+      // Safety check: ensure token exists and isn't the placeholder string
+      if (token && token !== 'cookie-based' && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
-      return config
+      return config;
     },
     (error) => Promise.reject(error)
-  )
-
+  );
   api.interceptors.response.use(
     (response) => response,
     (error) => {
+      if (error.response?.status === 403) {
+      console.error("❌ 403 Forbidden Details:", error.response.data);
+      alert("❌ Access Forbidden: You don't have permission to access this resource.");
+      }
       if (error.response?.status === 401) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         // Only redirect if not already on the login page to avoid loops
+        
         if (window.location.pathname !== '/login') {
           window.location.href = '/login'
         }

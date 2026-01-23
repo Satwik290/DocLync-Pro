@@ -3,22 +3,27 @@ import { Router } from 'express';
 import { bookAppointment, getMyAppointments, verifyPayment } from '../controllers/consultation.controller.js';
 import { PrescriptionController } from '../controllers/prescription.controller.js';
 import { authenticateJWT } from '../middleware/auth.middleware.js';
+import { authorizeRoles } from '../middleware/role.middleware.js'; // 1. Import your role middleware
+
 const prescriptionController = new PrescriptionController();
 const router = Router();
 
-router.post('/book', authenticateJWT, bookAppointment);
-router.post('/verify', authenticateJWT, verifyPayment);
-router.get('/my-appointments', authenticateJWT, getMyAppointments);
+// 2. Only PATIENTS should be allowed to book or verify payments
+router.post('/book', authenticateJWT, authorizeRoles('PATIENT'), bookAppointment);
+router.post('/verify', authenticateJWT, authorizeRoles('PATIENT'), verifyPayment);
 
+// 3. Both roles can view their own appointments
+router.get('/my-appointments', authenticateJWT, authorizeRoles('PATIENT', 'DOCTOR'), getMyAppointments);
 
-// Only Doctors can hit this, and they must provide a file named 'prescription'
+// 4. Only DOCTORS should upload prescriptions
 router.post(
   '/upload-prescription',
   authenticateJWT,
+  authorizeRoles('DOCTOR'), // Restrict this endpoint
   upload.single('prescription'),
   (req, res) => prescriptionController.upload(req, res)
 );
-// Health check
+
 router.get('/health', (req, res) => {
   res.json({ status: 'Consultation service is healthy' });
 });
