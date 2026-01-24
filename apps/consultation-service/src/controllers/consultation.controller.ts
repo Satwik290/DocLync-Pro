@@ -32,12 +32,31 @@ export const verifyPayment = async (req: Request, res: Response) => {
   }
 };
 
+// export const getMyAppointments = async (req: Request, res: Response) => {
+//   try {
+//     // patientId comes from your authenticateJWT middleware
+//     const patientId = (req as any).user.id; 
+    
+//     const appointments = await service.getPatientAppointments(patientId);
+//     res.json(appointments);
+//   } catch (error: any) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 export const getMyAppointments = async (req: Request, res: Response) => {
   try {
-    // patientId comes from your authenticateJWT middleware
-    const patientId = (req as any).user.id; 
+    const userId = (req as any).user.id;
+    const userRole = (req as any).user.role;
     
-    const appointments = await service.getPatientAppointments(patientId);
+    let appointments;
+    
+    if (userRole === 'DOCTOR') {
+      appointments = await service.getDoctorAppointments(userId);
+    } else {
+      appointments = await service.getPatientAppointments(userId);
+    }
+    
     res.json(appointments);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

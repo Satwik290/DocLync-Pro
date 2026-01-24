@@ -79,4 +79,42 @@ async getPatientAppointments(patientId: string) {
     }
   });
 }
+
+// Add this new method for doctors
+async getDoctorAppointments(userId: string) {
+  // First find the doctor profile by userId
+  const doctor = await prisma.doctor.findUnique({
+    where: { userId }
+  });
+
+  if (!doctor) {
+    throw new Error("Doctor profile not found");
+  }
+
+  return await prisma.appointment.findMany({
+    where: { doctorId: doctor.id },
+    include: {
+      patient: {
+        select: {
+          name: true,
+          email: true
+        }
+      },
+      doctor: {
+        select: {
+          specialization: true,
+          price: true,
+          user: {
+            select: {
+              name: true
+            }
+          }
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+}
 };

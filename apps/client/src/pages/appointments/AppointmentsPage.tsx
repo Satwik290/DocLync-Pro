@@ -7,6 +7,7 @@ import type { Appointment, Doctor } from '@/types'
 import { Calendar, DollarSign, User, FileText } from 'lucide-react'
 import { format } from 'date-fns'
 import { BookingModal } from '@/components/appointments/BookingModal'
+import { useUserStore } from '@/store/useUserStore'
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
@@ -15,13 +16,18 @@ export default function AppointmentsPage() {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null)
   const [bookingModalOpen, setBookingModalOpen] = useState(false)
   const { getMyAppointments, loading } = useBooking()
+  const { user } = useUserStore()
+
+  const isDoctor = user?.role === 'DOCTOR'
 
   // Initial data load
   useEffect(() => {
     loadAppointments()
-    loadDoctors()
+    if (!isDoctor) {
+      loadDoctors()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isDoctor])
 
   const loadAppointments = async () => {
     try {
@@ -70,15 +76,23 @@ export default function AppointmentsPage() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Appointments</h1>
-          <p className="text-muted-foreground">Manage your consultations</p>
+          <h1 className="text-3xl font-bold">
+            {isDoctor ? 'My Consultations' : 'Appointments'}
+          </h1>
+          <p className="text-muted-foreground">
+            {isDoctor 
+              ? 'Manage your patient consultations' 
+              : 'Manage your consultations'}
+          </p>
         </div>
-        <Button onClick={() => setShowBooking(!showBooking)}>
-          {showBooking ? 'View My Appointments' : 'Book New Appointment'}
-        </Button>
+        {!isDoctor && (
+          <Button onClick={() => setShowBooking(!showBooking)}>
+            {showBooking ? 'View My Appointments' : 'Book New Appointment'}
+          </Button>
+        )}
       </div>
 
-      {showBooking ? (
+      {showBooking && !isDoctor ? (
         <div>
           <h2 className="text-xl font-semibold mb-4">Available Doctors</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -131,7 +145,9 @@ export default function AppointmentsPage() {
           ) : appointments.length === 0 ? (
             <Card>
               <CardContent className="py-10 text-center text-muted-foreground">
-                No appointments yet. Book your first consultation!
+                {isDoctor 
+                  ? 'No consultations scheduled yet.' 
+                  : 'No appointments yet. Book your first consultation!'}
               </CardContent>
             </Card>
           ) : (
@@ -142,7 +158,9 @@ export default function AppointmentsPage() {
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <User className="h-5 w-5" />
-                        Dr. {appointment.doctor?.user.name}
+                        {isDoctor 
+                          ? `Patient: ${appointment.patient?.name || 'Unknown'}` 
+                          : `Dr. ${appointment.doctor?.user.name}`}
                       </CardTitle>
                       <CardDescription>
                         {appointment.doctor?.specialization}
@@ -181,6 +199,17 @@ export default function AppointmentsPage() {
                         📄 View Prescription
                       </a>
                     </Button>
+                  )}
+
+                  {isDoctor && appointment.status === 'PAID' && (
+                    <div className="pt-2 border-t">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Ready to upload prescription and complete consultation
+                      </p>
+                      <Button variant="secondary" className="w-full">
+                        Upload Prescription
+                      </Button>
+                    </div>
                   )}
                 </CardContent>
               </Card>

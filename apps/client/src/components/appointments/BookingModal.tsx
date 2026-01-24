@@ -165,4 +165,3 @@ export function BookingModal({ doctor, open, onClose, onSuccess }: BookingModalP
     </Dialog>
   )
 }
-

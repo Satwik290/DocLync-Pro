@@ -7,8 +7,12 @@ import consultationRoutes from './routes/consultation.routes.js';
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
-
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow your frontend
+  credentials: true,               // Allow cookies/headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use('/api/consultation', consultationRoutes);
 
 const PORT = process.env.PORT || 4002;

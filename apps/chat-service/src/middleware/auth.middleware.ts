@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 
 // 1. Define the interface to match your global UserPayload requirements
 export interface UserPayload {
-  id: string;    // Changed from 'userId' to 'id' to match your error message
-  email: string; // Added because the error says it's required
+  id: string;    
+  email: string; 
   role: string;
 }
 

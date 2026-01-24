@@ -1,4 +1,3 @@
-// src/types/index.ts
 export interface User {
   id: string
   name: string
@@ -28,6 +27,10 @@ export interface Appointment {
   prescriptionUrl?: string
   diagnosis?: string
   createdAt: string
+  patient?: {
+    name: string
+    email: string
+  }
   doctor?: {
     specialization: string
     price: number
