@@ -2,7 +2,9 @@
 
 <div align="center">
 
-![DocLync Pro Logo](./apps/Client/public/ChatGPT%20Image%20Jan%2023,%202026,%2009_18_35%20PM.png)
+<div align="center">
+  <img src="./assets/public/DocLync%20Logo.png" alt="DocLync Pro Logo" width="200">
+</div>
 
 **A Modern Microservices-Based Healthcare Platform**
 
