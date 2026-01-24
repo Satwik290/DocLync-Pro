@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![DocLync Pro Logo](https://img.shields.io/badge/DocLync-Pro-0066FF?style=for-the-badge&logo=hospitalcross&logoColor=white)
+![DocLync Pro Logo](./apps/Client/public/ChatGPT%20Image%20Jan%2023,%202026,%2009_18_35%20PM.png)
 
 **A Modern Microservices-Based Healthcare Platform**
 
