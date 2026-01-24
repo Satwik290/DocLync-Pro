@@ -32,16 +32,19 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(ellipse_at_top_left,var(--tw-gradient-stops))] from-blue-100 via-slate-50 to-indigo-100 px-4">
       <Card className="w-full max-w-md border-none shadow-2xl bg-white/80 backdrop-blur-md">
         <CardHeader className="space-y-1 pb-6">
-          <div className="flex flex-col items-center gap-2 mb-4">
+          <div className="flex flex-col items-center mb-4">
             <img
               src={Logo}
               alt="DocLync Logo"
-              className="h-20 w-auto object-contain"
+              className="h-32 w-auto object-contain transition-transform hover:scale-105 duration-300"
             />
-
-            {/* <span className="text-xl font-bold tracking-tight text-primary">
-              DocLync
-            </span> */}
+            <div className="-mt-2.5 text-center">
+              {" "}
+              {/* Pulled text closer to the graphic */}
+              <span className="text-2xl font-black tracking-tight text-slate-800">
+                DocLync<span className="text-primary">Pro</span>
+              </span>
+            </div>
           </div>
           <CardTitle className="text-3xl font-extrabold tracking-tight text-center text-slate-900">
             Welcome Back
