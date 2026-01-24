@@ -1,14 +1,21 @@
+// src/api/socket.ts - FIXED with correct event names
 import { io, Socket } from 'socket.io-client'
+import type { Message } from '@/types'
 
-// 1. Define your event interfaces
+// Define event interfaces matching your backend
 interface ServerToClientEvents {
-  messageReceived: (data: { roomId: string; message: string; senderId: string }) => void;
-  error: (err: { message: string }) => void;
+  chat_history: (history: Message[]) => void
+  receive_message: (message: Message) => void
+  user_typing: (data: { userId: string; name: string; isTyping: boolean }) => void
+  error: (error: { message: string }) => void
+  connect: () => void
+  connect_error: (err: Error) => void
 }
 
 interface ClientToServerEvents {
-  sendMessage: (data: { roomId: string; message: string }) => void;
-  joinRoom: (roomId: string) => void;
+  join_room: (appointmentId: string) => void
+  send_message: (data: { appointmentId: string; message: string }) => void
+  typing: (data: { appointmentId: string; isTyping: boolean }) => void
 }
 
 class SocketService {
@@ -26,6 +33,10 @@ class SocketService {
       console.log('✅ Socket connected:', this.socket?.id)
     })
 
+    this.socket.on('connect_error', (err) => {
+      console.error('❌ Socket connection error:', err.message)
+    })
+
     return this.socket
   }
 
@@ -40,32 +51,18 @@ class SocketService {
     return this.socket
   }
 
-  // Use the eslint-disable comments right above the lines using 'any'
-  emit<K extends keyof ClientToServerEvents>(
-    event: K,
-    data: Parameters<ClientToServerEvents[K]>[0]
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.socket?.emit(event as any, data as any)
+  emit(event: keyof ClientToServerEvents, data: unknown) {
+    this.socket?.emit(event, data as never)
   }
 
-  on<K extends keyof ServerToClientEvents>(
-    event: K,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callback: any
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.socket?.on(event as any, callback)
+  on(event: keyof ServerToClientEvents, callback: (...args: never[]) => void) {
+    this.socket?.on(event, callback)
   }
 
-  off<K extends keyof ServerToClientEvents>(
-    event: K,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callback?: any
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.socket?.off(event as any, callback)
+  off(event: keyof ServerToClientEvents, callback?: (...args: never[]) => void) {
+    this.socket?.off(event, callback)
   }
 }
 
 export const socketService = new SocketService()
+

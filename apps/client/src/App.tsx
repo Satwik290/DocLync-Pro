@@ -9,7 +9,7 @@ import { SideNav } from './components/dashboard/sideNav'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useUserStore()
-  return isAuthenticated() ? <>{children}</> : <Navigate to="/login" />
+  return isAuthenticated() ? <>{children}</> : <Navigate to="/login" replace />
 }
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -61,9 +61,8 @@ export default function App() {
           }
         />
         
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   )
 }
-

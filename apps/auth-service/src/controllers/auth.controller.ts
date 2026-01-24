@@ -32,22 +32,22 @@ export const login = async (req: Request, res: Response) => {
     const authService = new AuthService();
     const { user, token } = await authService.login(email, password);
 
-    // Set cookie
     res.cookie('token', token, {
-      httpOnly: true, // Prevents XSS
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
+    // CRITICAL: Must return user object
     res.status(200).json({
       message: 'Login successful',
-      user
+      user  // ← Make sure this is here!
     });
   } catch (error) {
-  const message = error instanceof Error ? error.message : 'An unexpected error occurred';
-  res.status(401).json({ message });
-}
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+    res.status(401).json({ message });
+  }
 };
 
 export const logout = async (req:Request, res:Response) => {

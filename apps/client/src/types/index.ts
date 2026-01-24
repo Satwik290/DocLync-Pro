@@ -32,6 +32,7 @@ export interface Appointment {
     email: string
   }
   doctor?: {
+    id: string
     specialization: string
     price: number
     user: {

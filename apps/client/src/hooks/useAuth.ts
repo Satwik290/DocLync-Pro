@@ -1,9 +1,7 @@
-// src/hooks/useAuth.ts
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authApi } from '../api/axios'
-import { useUserStore } from '../store/useUserStore'
-import type { User } from '../types/index'
+import { authApi } from '@/api/axios'
+import { useUserStore } from '@/store/useUserStore'
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false)
@@ -15,12 +13,33 @@ export const useAuth = () => {
     setLoading(true)
     setError(null)
     try {
+      console.log('🔐 Logging in:', email)
       const { data } = await authApi.post('/login', { email, password })
+      console.log('✅ Login response:', data)
+      
+      if (!data.user) {
+        throw new Error('No user data received')
+      }
+      
+      // Set token first
+      const token = data.token || 'cookie-based-auth'
+      setToken(token)
+      
+      // Then set user  
       setUser(data.user)
-      setToken(data.token || 'cookie-based')
+      
+      // Wait for Zustand to persist
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      // Verify it's saved
+      const stored = localStorage.getItem('user-storage')
+      console.log('💾 Storage check:', stored ? 'SAVED' : 'MISSING')
+      
       navigate('/dashboard')
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed')
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Login failed'
+      setError(errorMessage)
+      console.error('❌ Login error:', err)
       throw err
     } finally {
       setLoading(false)
@@ -33,8 +52,9 @@ export const useAuth = () => {
     try {
       await authApi.post('/signup', { name, email, password, role })
       await login(email, password)
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Signup failed')
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Signup failed'
+      setError(errorMessage)
       throw err
     } finally {
       setLoading(false)
@@ -54,4 +74,3 @@ export const useAuth = () => {
 
   return { login, signup, logout, loading, error }
 }
-

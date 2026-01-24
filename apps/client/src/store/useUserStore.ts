@@ -1,9 +1,9 @@
-// src/store/useUserStore.ts
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { User } from '../types/index'
+import type { User } from '@/types'
 
 interface UserStore {
+  initialize(): unknown
   user: User | null
   token: string | null
   setUser: (user: User | null) => void
@@ -32,17 +32,16 @@ export const useUserStore = create<UserStore>()(
       logout: () => {
         set({ user: null, token: null })
         localStorage.removeItem('token')
-        localStorage.removeItem('user')
+        localStorage.removeItem('user-storage')
       },
       
-      isAuthenticated: () => !!get().token && !!get().user,
+      isAuthenticated: () => {
+        const state = get()
+        return !!state.token && !!state.user
+      },
     }),
     {
       name: 'user-storage',
-      partialize: (state) => ({
-        user: state.user,
-        token: state.token,
-      }),
     }
   )
 )
