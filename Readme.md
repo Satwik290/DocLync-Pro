@@ -1,12 +1,14 @@
-# 🏥 DocLync Pro
-
+# 🏥 DocLync Pro : Seamless Real-Time Doctor-Patient Consultations
 <div align="center">
 
 <div align="center">
-  <img src="./assets/public/DocLync%20Logo.png" alt="DocLync Pro Logo" width="200">
+<img src="https://raw.githubusercontent.com/Satwik290/DocLync-Pro/main/assets/public/DocLync%20Logo.png" alt="DocLync Pro Banner" alt="DocLync Pro Banner" 
+    style="width:100%; height:200px; object-fit:cover;"
+<br />
+
+  **A Modern Microservices-Based Healthcare Platform**
+  
 </div>
-
-**A Modern Microservices-Based Healthcare Platform**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://reactjs.org/)
