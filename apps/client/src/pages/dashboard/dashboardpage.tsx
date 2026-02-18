@@ -13,7 +13,7 @@ export default function DashboardPage() {
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">
-            Welcome, {isDoctor ? 'Dr. ' : ''}{user?.name}!
+            Welcome, {isDoctor ? ' ' : ''}{user?.name}!
           </h1>
           <p className="text-slate-500 font-medium mt-1">
             {isDoctor 
